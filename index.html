@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CleanVision – Blur Detector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(180deg, #f9fafb 0%, #eef2ff 100%);
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+  <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8">
+    <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">
+      🧠 <span class="text-indigo-600">CleanVision</span> – Blur Detector
+    </h1>
+
+    <!-- Upload form -->
+    <form action="/analyze" method="post" enctype="multipart/form-data" class="flex flex-col items-center space-y-4">
+      <label
+        class="w-full flex flex-col items-center px-4 py-6 bg-indigo-50 text-indigo-600 rounded-lg shadow-md tracking-wide uppercase border border-indigo-200 cursor-pointer hover:bg-indigo-100 transition">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M3 16l4-4m0 0l4 4m-4-4v12M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="mt-2 text-base leading-normal">Select an image</span>
+        <input type="file" name="file" class="hidden" accept="image/*" required />
+      </label>
+      <button type="submit"
+        class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition">
+        Analyze Image
+      </button>
+    </form>
+
+    <!-- Uploaded image preview -->
+    {% if image_url %}
+    <div class="mt-8 text-center">
+      <h2 class="text-xl font-semibold text-gray-700 mb-2">Uploaded Image</h2>
+      <img src="{{ image_url }}" alt="Uploaded Image"
+        class="mx-auto rounded-lg shadow-md max-h-96 object-contain border" />
+    </div>
+    {% endif %}
+
+    <!-- Result card -->
+    {% if result %}
+    <div class="mt-10">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Result</h2>
+
+      {% if result.is_blurry %}
+      <!-- ❌ FAIL -->
+      <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center shadow-md">
+        <h3 class="text-red-600 text-xl font-bold mb-2">❌ {{ result.status }}</h3>
+        <p class="text-gray-700 font-medium mb-1">{{ result.reason }}</p>
+        <p class="text-gray-500 text-sm">
+          Sharpness Score: <span class="font-semibold">{{ result.sharpness_score }}</span> |
+          Confidence: <span class="font-semibold">{{ result.confidence }}</span>
+        </p>
+      </div>
+
+      {% else %}
+      <!-- ✅ PASS -->
+      <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center shadow-md">
+        <h3 class="text-green-600 text-xl font-bold mb-2">✅ {{ result.status }}</h3>
+        <p class="text-gray-700 font-medium mb-1">{{ result.reason }}</p>
+        <p class="text-gray-500 text-sm">
+          Sharpness Score: <span class="font-semibold">{{ result.sharpness_score }}</span> |
+          Confidence: <span class="font-semibold">{{ result.confidence }}</span>
+        </p>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  <footer class="mt-10 text-gray-400 text-sm text-center">
+    Built with ❤️ using <span class="text-indigo-500 font-semibold">CleanVision</span> & FastAPI
+  </footer>
+</body>
+</html>
+
